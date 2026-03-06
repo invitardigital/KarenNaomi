@@ -29,6 +29,7 @@
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/11.0.5/swiper-bundle.min.css">
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.css">
 
     <link rel="stylesheet" type="text/css" href="util.css">
     <link rel="stylesheet" type="text/css" href="filter.css">
@@ -63,7 +64,8 @@
 
 
             <div class="pst_relative w_100">
-                <img class="w_100 no_touch " src="total.webp">
+                <img class="w_100 no_touch d_none" id="no_acces" src="total.webp">
+                <img class="w_100 no_touch" id="acces" src="total2.webp">
             </div>
 
 
@@ -87,22 +89,56 @@
 
 
             
-            <div class="pst_absolute left_0 w_100" style="bottom: 30.2%">
+            <div class="pst_absolute left_0 w_100 d_none" style="bottom: 30.2%" id="no_acces" onclick="ShowModal()">
                     <img class="w_100" src="admin.png">
             </div>
 
 
-            
-            
-           <!--<div class="pst_absolute left_0 w_50" style="bottom: 45.2%">
+
+            <div class="pst_absolute left_0 w_100" style="bottom: 29.5%" id="acces">
                 <center>
                     <a class="no_link" 
-                    href="https://maps.app.goo.gl/JbPHRDSkLydjoEyRA"  target="_blank">
-                    <img class="hpx_45" src="location.png">
+                    href="https://maps.app.goo.gl/5z3oiRiURRywopLNA"  target="_blank">
+                    <img class="hpx_100" src="location.png">
                     </a>
                </center>
             </div>
 
+
+            
+
+
+
+
+            <div class="pst_absolute left_0 w_100" style="bottom: 17.5%" id="acces">
+                <center>
+                    <br>
+                    <h1 class="font_paris text_center color_white fspx_50 m_0 w_60 d_block m0_a" id="txt_famlia">- - -</h1>
+                    <h1 class="font_paris text_center color_white fspx_30 m_0 w_60 d_block m0_a">
+                        pase para
+                    <span id="txt_personas">- - -</span></h1>
+                </center>
+            </div>
+            
+
+
+
+            <div class="pst_absolute w_100" style="bottom: 14.4%">
+                <center>
+                    
+                    <a class="no_link" 
+                    href="https://api.whatsapp.com/send?phone=+525521017608&text=Hola,%20confirmo%20mi%20asistencia%20a%20tu%20evento"  target="_blank">
+                        <img class="hpx_100" src="confirmar.png">
+                    </a>
+                </center>
+            </div>
+
+
+
+            
+           <!--
+
+           
 
            <div class="pst_absolute right_0 w_50" style="bottom: 45.2%">
                 <center>
@@ -116,16 +152,7 @@
             
             
             
-            
-            <div class="pst_absolute w_100" style="bottom: 41.2%">
-                <center>
-                    
-                    <a class="no_link" 
-                    href="https://api.whatsapp.com/send?phone=+5215631175959&text=Hola,%20confirmo%20mi%20asistencia%20a%20tu%20evento"  target="_blank">
-                        <img class="hpx_45" src="confir.png">
-                    </a>
-                </center>
-            </div>-->
+            -->
 
 
 
@@ -185,6 +212,32 @@
 
     </div>
 
+
+    <!-- MINIDASH -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Login</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Ingresa key</label>
+                        <input type="password" class="form-control" name="key" placeholder="##########">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-primary" onclick="Login()">Ingresar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+
+
 <!-- Scripts -->
 <script src="controller.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -208,8 +261,15 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/lightgallery/2.7.2/plugins/zoom/lg-zoom.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastify-js/1.12.0/toastify.min.js"></script>
+
 <script>
 
+
+
+const API_URL = 'https://www.ztart.mx/';
+const API = "https://www.ztart.mx/";
+const CLIENTE_ID = "30";
 
 
 var audio = new Audio('audio.mp3');
@@ -414,6 +474,257 @@ document.getElementById("sello").addEventListener("click", function() {
 //$(window).scrollTop(0);
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class UrlParams {  constructor() { this.params = new URLSearchParams(window.location.search); }  get(key) { return this.params.get(key); } }
+const url = new UrlParams();
+var invitado = url.get('invitado');
+if(invitado!=null){
+    var link = `${API}pase_show?cliente_id=${CLIENTE_ID}&familia=${invitado}&r=${Math.random()}`;
+    function procesarRespuesta(data) {
+        var data = JSON.parse(data);
+        if (data.message == false) {
+            window.location.href = "./";
+        } else {
+            $("*#txt_famlia").html(toTitleCase(data.message.familia));
+            var n = data.message.num_invitados;
+            var str = "";
+            if (n > 1) {
+                str = str + n + " personas";
+            } else {
+                str = str + n + " persona";
+            }
+            $("*#txt_personas").html(str);
+            console.log(data.message);
+        }
+    }
+    fetch(link)
+    .then(response => response.text())
+    .then(data => procesarRespuesta(data))
+    .catch(error => {
+        console.error('Error en la petición:', error);
+        window.location.href = "./";
+    });
+  
+}else{
+
+
+    $("*#acces").addClass("d_none");
+    $("*#no_acces").removeClass("d_none");
+}
+function ShowModal(){
+     $('#exampleModal').modal('show');
+}
+async function Login(){
+    var formData = $('#exampleModal form');
+    var serialize = formData.serialize();
+    var dataObj = formData.serializeArray();
+    var url = `${API}pase_login?cliente_id=${CLIENTE_ID}&clave=${dataObj[0].value}`;
+    
+    function procesarRespuesta(data) {
+        if (data == 'error') {
+            Toastify({
+                text: "Error en la clave",
+                duration: 1000,
+                backgroundColor: "#F44336"
+            }).showToast();
+        }
+        
+        if (data == 'exito') {
+            var all = `${API}/pase_all?cliente_id=${CLIENTE_ID}&r=${Math.random()}`;
+            
+            function procesarRespuestaAll(data) {
+                $("#exampleModal").html(data);
+            }
+            
+            fetch(all)
+                .then(response => response.text())
+                .then(data => {
+                    procesarRespuestaAll(data);
+                    console.log('Respuesta procesada exitosamente');
+                })
+                .catch(error => {
+                    console.error('Error al cargar los datos:', error);
+                });
+        }
+    }
+    fetch(url)
+        .then(response => response.text())
+        .then(data => procesarRespuesta(data))
+        .catch(error => {
+            console.error('Error en la petición de login:', error);
+            Toastify({
+                text: "Error de conexión",
+                duration: 1000,
+                backgroundColor: "#F44336"
+            }).showToast();
+        });
+}
+function addinvitado(){
+    const familia = document.getElementById('familia').value.trim().toLowerCase();
+    const personas = document.getElementById('personas').value.trim();
+    if (familia === '') {
+        Toastify({
+            text: "La familia no puede ser vacio",
+            duration: 1000,
+            backgroundColor: "#F44336"
+        }).showToast();
+        return false;
+    }
+    if (personas === '') {
+        Toastify({
+            text: "El número de personas no puede ser vacio",
+            duration: 1000,
+            backgroundColor: "#F44336"
+        }).showToast();
+        return false;
+    }
+    if (isNaN(personas) || personas <= 0) {
+        Toastify({
+            text: "El número de personas debe ser un número válido mayor a 0",
+            duration: 1000,
+            backgroundColor: "#F44336"
+        }).showToast();
+        return false;
+    }
+    const tabla = document.querySelector('table');
+    const tbody = tabla.querySelector('tbody');
+    let textoEncontrado = false;
+    if (tbody.textContent.includes('Agrega invitados en la parte de abajo')) {
+        textoEncontrado = true;
+    }
+    if (textoEncontrado) {
+        tbody.innerHTML = ''; // Limpiar
+    }
+    let FEncontrado = false;
+    if (tbody.textContent.includes(familia)) {
+        FEncontrado = true;
+    }
+    if (FEncontrado) {
+        Toastify({
+            text: "La familia ya esta agregada",
+            duration: 1000,
+            backgroundColor: "#F44336"
+        }).showToast();
+        return false;
+    }
+    tbody.innerHTML += `
+        <tr data-familia="${familia}">
+            <td>${familia}</td>
+            <td>${personas}</td>
+            <td class="text_center">
+                <button type="button" class="btn btn-primary p_5" onclick="compartirWat('${familia}')"><span class="material-icons">reply</span></button>
+                <button type="button" class="btn btn-danger p_5" onclick="deleteFam('${familia}')"><span class="material-icons">delete</span></button>
+            </td>
+        </tr>
+    `;
+    Toastify({
+        text: "Agregando ",
+        duration: 1000,
+        backgroundColor: "#4CAF50"
+    }).showToast();
+    document.getElementById('familia').value = '';
+    document.getElementById('personas').value = '';
+    var url = `${API}pase_update?cliente_id=${CLIENTE_ID}&tipo=1&familia=${familia}&personas=${personas}&r=${Math.random()}`;
+    function procesarRespuesta(data) {
+        console.log('Invitado agregado exitosamente');
+    }
+    fetch(url)
+        .then(response => response.text())
+        .then(data => procesarRespuesta(data))
+        .catch(error => {
+            console.error('Error al agregar invitado:', error);
+            Toastify({
+                text: "Error al guardar en el servidor",
+                duration: 1000,
+                backgroundColor: "#F44336"
+            }).showToast();
+        });
+}
+function deleteFam(familia){
+    document.querySelector('[data-familia="'+familia+'"]').remove();
+    const tabla = document.querySelector('table');
+    const tbody = tabla.querySelector('tbody');
+    const totalTr = tbody.querySelectorAll('tr').length
+    if(totalTr < 1){
+        tbody.innerHTML += `
+            <tr>
+                <td class="text_center" colspan="3">Agrega invitados en la parte de abajo</td>
+            </tr>
+        `;
+    }
+    Toastify({
+        text: "Borrado ",
+        duration: 1000,
+        backgroundColor: "#4CAF50"
+    }).showToast();
+
+    var url = `${API}pase_update?cliente_id=${CLIENTE_ID}&tipo=0&familia=${familia}&r=${Math.random()}`;
+    
+    function procesarRespuesta(data) {
+        console.log('Invitado borrado exitosamente');
+    }
+    
+    fetch(url)
+        .then(response => response.text())
+        .then(data => procesarRespuesta(data))
+        .catch(error => {
+            console.error('Error al borrar invitado:', error);
+            Toastify({
+                text: "Error al eliminar del servidor",
+                duration: 1000,
+                backgroundColor: "#F44336"
+            }).showToast();
+        });
+}
+function compartirWat(familia){
+    const boton = document.createElement('button');
+    boton.id = 'miBoton';
+    boton.className = 'd_none';
+    boton.textContent = 'Compartir WhatsApp';
+    document.body.appendChild(boton);
+    
+    // Codificar la familia para evitar problemas con espacios
+    const familiaCodeada = encodeURIComponent(familia);
+    const mensaje = "https://invitadigital24.github.io/Addison/?invitado=" + familiaCodeada;
+    const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(mensaje)}`;
+    
+    boton.addEventListener('click', function() {
+        window.open(whatsappUrl, '_blank');
+        boton.remove();
+    });
+    boton.click();
+}
+function toTitleCase(str) {
+    return str
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+        .join(' ');
+}
 
 
 
